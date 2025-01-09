@@ -3,6 +3,7 @@ Implements table 8 in https://arxiv.org/pdf/2401.00368
 """
 
 from utils import generate_task
+import variables
 
 prompt = f"""Brainstorm a list of potentially useful text retrieval tasks.
 Here are a few examples for your reference:
@@ -14,8 +15,8 @@ Please adhere to the following guidelines:
 Your output must always be a python list of strings only, with about 20 elements, and each element corresponds to a distinct
 retrieval task in one sentence. Do not explain yourself or output anything else. Be creative!"""
 
-generate_task(total_desired_samples=total_desired_samples,
-              model_id=model_id,
+generate_task(total_desired_samples=variables.total_desired_samples,
+              model_id=variables.model_id,
               prompt=prompt,
               csv_save_as=csv_save_as,
               push_to_hf=push_to_hf,

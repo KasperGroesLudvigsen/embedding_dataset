@@ -1,5 +1,28 @@
 import ast
 import random 
+from datasets import Dataset
+from vllm import LLM, SamplingParams
+
+def make_prompt() -> dict:
+    topic = random.choice(topics)
+    #prompt = f"""f{example["instruction"]}: **TEXT:** {example["text"]}"""
+
+    cs_topic = random.choice(cs_topics)
+
+    length = random.choice(lengths)
+
+    prompt_options = [
+        f"Please write a text of {length} that could pass as a transcription of an everyday conversation between two or more people on the topic of: {topic}. Do not indicate speaker turns. Do not use quotation marks. Just write the transcription as on long text. Then, under the headline '**Summary**' write one sentence that summarizes the transcription, emphasizing any meetings, persons or places mentioned in the conversation.", # Indicate speaker turns like this: '**Speaker1**', '**Speaker2**' and so forth.
+        #f"Please write a text of {length} that could pass as a transcription of a telephone conversation between a customer and a customer service representative on the topic of: {cs_topic}. Do not indicate speaker turns. Do not use quotation marks. Just write the transcription as on long text. Then, under the headline '**Summary**' write one sentence that summarizes the transcription, emphasizing any meetings, persons or places mentioned in the conversation.",
+        f"Imagine you walked into a room where a group of people were in the middle of having a conversation on the topic of: {topic}. Write a verbatim transcript of {length} of what they said. Do not indicate speaker turns. Do not use quotation marks. Then, under the headline '**Summary**' write one sentence that summarizes the transcription, emphasizing any meetings, persons or places mentioned in the conversation."
+    ]
+
+    #prompt = f"Please write a text that could pass as a transcription of an everyday conversation between two or more people on the topic of: {topic}. Do not indicate speaker turns and do not use quotation marks. Just write the transcription as on long text. Then, write one sentence that summarizes the transcription, emphasizing any meetings, persons or places mentioned in the conversation"
+    prompt = random.choice(prompt_options)
+
+    return {"prompt": [{"role": "user", "content": prompt}]}
+    
+
 
 def string_to_list(input_str):
     """
@@ -46,12 +69,6 @@ def convert_and_flatten(input_list):
             continue
     
     return flattened_list
-
-
-from datasets import Dataset
-from vllm import LLM, SamplingParams
-from utils import string_to_list, convert_and_flatten
-
 
 
 def generate_task(

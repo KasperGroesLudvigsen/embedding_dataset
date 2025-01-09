@@ -4,6 +4,12 @@ from datasets import Dataset, load_dataset
 import json
 import pandas as pd
 from abc import ABC, abstractmethod
+from dotenv import load_dotenv
+import os 
+
+load_dotenv()
+
+token = os.getenv("HF_TOKEN")
 
 class Generator(ABC):
 
@@ -18,7 +24,7 @@ class Generator(ABC):
             task: list=[], num_words: list=[], clarity: list=[], difficulty: list=[]
             ) -> None:
         
-        self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
+        self.llm = LLM(model=model_id, max_seq_len_to_capture=8000, token=token)
 
         self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
 
@@ -124,7 +130,7 @@ class GenerateFromRetrievalTask(Generator):
             task=random.choice(self.task),
             query_type=random.choice(self.query_type),
             query_length=random.choice(self.query_length),
-            clarity=random.choice(self.clarity)
+            clarity=random.choice(self.clarity),
             num_words=random.choice(self.num_words),
             difficulty=random.choice(self.difficulty),
             language=self.language

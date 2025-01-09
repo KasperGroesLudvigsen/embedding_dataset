@@ -3,29 +3,20 @@ Table 9: Prompt template for the long-short matching subgroup. For placeholders,
 "at least 10", "at least 50", "at least 100", "at least 200"}, “{difficulty}” ∈ {high school, college, PhD}, “{clarity}” ∈
 {clear, understandable with some effort, ambiguous}.
 """
-
-import random
-from datasets import load_dataset, Dataset
-import json
-from vllm import LLM, SamplingParams
-import pandas as pd 
+from datasets import load_dataset
 from generators import GenerateFromTextClassificationTask
+import variables
 
-samples = 10
-model_id = ""
-
-temperature = 1.0
-top_p = 1.0
-
-task_dataset_id = "../.."
+task_dataset_id = "synthetic-from-classification-tasks"
 
 language = "DANISH"
 num_words = ["less than 10", "at least 10", "at least 50", "at least 100", "at least 200"]
 difficulty = ["high school", "college", "PhD"]
 clarity = ["clear", "understandable with some effort", "ambiguous"]
 task = ["task1", "task2"]
-#task = load_dataset(task_dataset_id)
-#task = list(task["train"]["response"])
+
+task = load_dataset(f"ThatsGroes/{variables.text_classification_task_dataset_name}")
+task = list(task["train"]["response"])
 
 
 prompt = f"""You have been assigned a text classification task: {{task}}
@@ -47,19 +38,20 @@ the task too easy.
 Your output must always be a JSON object only, do not explain yourself or output anything else. Be creative!"""
 
 generator = GenerateFromTextClassificationTask(
-    model_id=model_id, 
-    temperature=temperature, 
-    top_p=top_p, 
+    model_id=variables.model_id, 
+    temperature=variables.temperature, 
+    top_p=variables.top_p, 
     prompt=prompt, 
-    language=language,
-    samples=samples
+    language=variables.language,
+    samples=variables.total_desired_samples
     )
 
-dataset = generator.generate(samples=samples)
+dataset = generator.generate()
 
-dataset.to_csv("synth_data.csv")
+dataset.to_csv(f"{task_dataset_id}.csv")
 
-#dataset.push_to_hub("ThatsGroes/some_name")
+if variables.push_to_hf:
+    dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}")
 
 
 

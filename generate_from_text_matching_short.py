@@ -3,25 +3,16 @@ Table 10: Prompt template for the short-short matching subgroup. We do not gener
 matching task is already reasonably difficult.
 """
 
-import random
-from datasets import load_dataset, Dataset
-import json
-from vllm import LLM, SamplingParams
-import pandas as pd 
+from datasets import load_dataset
 from generators import GenerateFromTextMatchingTask
+import variables
 
-samples = 10
-model_id = ""
-
-temperature = 1.0
-top_p = 1.0
-
-task_dataset_id = "../.."
+task_dataset_id = "synthetic-from-text-mathing-short-tasks"
 
 language = "DANISH"
 task = ["task1", "task2"]
-#task = load_dataset(task_dataset_id)
-#task = list(task["train"]["response"])
+task = load_dataset(f"ThatsGroes/{variables.text_matching_short_dataset_name}")
+task = list(task["train"]["response"])
 
 
 prompt = f"""You have been assigned a text matching task: {{task}}
@@ -36,21 +27,18 @@ otherwise the task would be too easy.
 Your output must always be a JSON object only, do not explain yourself or output anything else. Be creative!"""
 
 generator = GenerateFromTextMatchingTask(
-    model_id=model_id, 
-    temperature=temperature, 
-    top_p=top_p, 
+    model_id=variables.model_id, 
+    temperature=variables.temperature, 
+    top_p=variables.top_p, 
     prompt=prompt, 
-    language=language,
-    samples=samples,
+    language=variables.language,
+    samples=variables.total_desired_samples,
     task=task,
     )
 
-dataset = generator.generate(samples=samples)
+dataset = generator.generate()
 
-dataset.to_csv("synth_data.csv")
+dataset.to_csv(f"{task_dataset_id}.csv")
 
-#dataset.push_to_hub("ThatsGroes/some_name")
-
-
-
-
+if variables.push_to_hf:
+    dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}")

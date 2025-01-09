@@ -1,0 +1,10 @@
+model_id="google/gemma-2-27b-it"
+total_desired_samples=1000000
+temperature = 1.0
+top_p = 1.0
+language="DANISH"
+push_to_hf=True
+text_classification_task_dataset_name="classification-tasks"
+retrieval_task_dataset_name="retrieval-tasks"
+text_matching_short_dataset_name="text-matching-short-tasks"
+text_matching_long_dataset_name="text-matching-long-tasks"

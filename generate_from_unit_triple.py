@@ -1,27 +1,15 @@
 """
-Table 10: Prompt template for the short-short matching subgroup. We do not generate negative documents as the
-matching task is already reasonably difficult.
+Table 12: Prompt template for monolingual STS. For placeholders, “{high_score}” ∈ {4, 4.5, 5}, “{low_score}” ∈
+{2.5, 3, 3.5}, “{unit}” ∈ {sentence, phrase, passage}, “{difficulty}” ∈ {elementary school, high school, college}.
 """
 
-import random
-from datasets import load_dataset, Dataset
-import json
-from vllm import LLM, SamplingParams
-import pandas as pd 
 from generators import GenerateUnitTriple
+import variables
 
-samples = 10
-model_id = ""
-
-temperature = 1.0
-top_p = 1.0
-
-task_dataset_id = "../.."
+task_dataset_id = "synthetic-from-unit-triple-tasks"
 
 language = "DANISH"
 task = ["task1", "task2"]
-#task = load_dataset(task_dataset_id)
-#task = list(task["train"]["response"])
 unit = ["sentence", "phrase", "passage"]
 high_score = ["4", "4.5", "5"]
 low_score = ["2.5", "3", "3.5"]
@@ -39,22 +27,19 @@ Your output must always be a JSON object only with three keys "S1", "S2" and "S3
 anything else. Be creative!"""
 
 generator = GenerateUnitTriple(
-    model_id=model_id, 
-    temperature=temperature, 
-    top_p=top_p, 
+    model_id=variables.model_id, 
+    temperature=variables.temperature, 
+    top_p=variables.top_p, 
     prompt=prompt, 
-    language=language,
+    language=variables.language,
     task=task,
-    samples=samples,
+    samples=variables.total_desired_samples,
     unit=unit
     )
 
-dataset = generator.generate(samples=samples)
+dataset = generator.generate()
 
-dataset.to_csv("synth_data.csv")
+dataset.to_csv(f"{task_dataset_id}.csv")
 
-#dataset.push_to_hub("ThatsGroes/some_name")
-
-
-
-
+if variables.push_to_hf:
+    dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}")

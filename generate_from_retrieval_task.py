@@ -2,20 +2,11 @@
 Table 8 - retrieval task
 """
 
-import random
-from datasets import load_dataset, Dataset
-import json
-from vllm import LLM, SamplingParams
-import pandas as pd 
+from datasets import load_dataset
 from generators import GenerateFromTextClassificationTask
+import variables
 
-samples = 10
-model_id = ""
-
-temperature = 1.0
-top_p = 1.0
-
-task_dataset_id = "../.."
+task_dataset_id = "synthetic-from-retrieval-tasks"
 
 language = "DANISH"
 num_words = ["50", "100", "200", "300", "400", "500"]
@@ -25,8 +16,8 @@ task = ["task1", "task2"]
 query_length = ["less than 5 words", "5 to 15 words", "at least 10 words"]
 query_type = ["extremely long-tail", "long-tail", "common"]
 
-#task = load_dataset(task_dataset_id)
-#task = list(task["train"]["response"])
+task = load_dataset(f"ThatsGroes/{variables.retrieval_task_dataset_name}")
+task = list(task["train"]["response"])
 
 
 prompt = f"""You have been assigned a retrieval task: {{task}}
@@ -49,20 +40,18 @@ Your output must always be a JSON object only, do not explain yourself or output
 
 
 generator = GenerateFromTextClassificationTask(
-    model_id=model_id, 
-    temperature=temperature, 
-    top_p=top_p, 
+    model_id=variables.model_id, 
+    temperature=variables.temperature, 
+    top_p=variables.top_p, 
     prompt=prompt, 
-    language=language,
-    samples=samples
+    language=variables.language,
+    samples=variables.total_desired_samples
     )
 
-dataset = generator.generate(samples=samples)
+dataset = generator.generate()
 
-dataset.to_csv("synth_data.csv")
+dataset.to_csv(f"{task_dataset_id}.csv")
 
-#dataset.push_to_hub("ThatsGroes/some_name")
-
-
-
-
+if variables.push_to_hf:
+    dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}")
+    
