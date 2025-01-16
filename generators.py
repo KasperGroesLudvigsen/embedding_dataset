@@ -1,4 +1,4 @@
-from vllm import LLM, SamplingParams
+#from vllm import LLM, SamplingParams
 import random
 from datasets import Dataset, load_dataset
 import json
@@ -24,9 +24,9 @@ class Generator(ABC):
             task: list=[], num_words: list=[], clarity: list=[], difficulty: list=[]
             ) -> None:
         
-        self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
+        #self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
 
-        self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
+        #self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
 
         self.prompt = prompt
 
@@ -38,6 +38,10 @@ class Generator(ABC):
         self.difficulty = difficulty
 
         self.prompts = [{"prompt": [{"role": "user", "content": self.make_prompt()}]} for i in range(samples)]
+
+        print(f"EXAMPLE PROMPT:\n\n{self.prompts[0]}")
+
+        self.prompts_as_dataset = Dataset.from_list(self.prompts)
 
     def _generate(self):
 
@@ -93,7 +97,7 @@ class GenerateFromTextClassificationTask(Generator):
             language=self.language
         )
 
-        return {"prompt": [{"role": "user", "content": _prompt}]}
+        return _prompt
     
     def post_process(self, outputs: list[dict]) -> Dataset:
 
@@ -136,8 +140,7 @@ class GenerateFromRetrievalTask(Generator):
             language=self.language
         )
 
-        return {"prompt": [{"role": "user", "content": _prompt}]}
-    
+        return _prompt    
 
 
 class GenerateFromTextMatchingTask(Generator):
@@ -153,8 +156,7 @@ class GenerateFromTextMatchingTask(Generator):
             language=self.language
         )
 
-        return {"prompt": [{"role": "user", "content": _prompt}]}
-    
+        return _prompt    
 
 class GenerateUnitTriple(Generator):
     """
@@ -181,5 +183,4 @@ class GenerateUnitTriple(Generator):
             language=self.language,
         )
 
-        return {"prompt": [{"role": "user", "content": _prompt}]}
-
+        return _prompt
