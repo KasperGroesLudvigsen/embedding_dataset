@@ -39,3 +39,11 @@ def inspect_data():
         print(data["train"]["prompt"][0])
         print(data["train"]["response"][0])
         print(data["train"]["model"][0])
+
+def main():
+    inspect_data()
+    inspect_tasks()
+
+    
+if __name__ == "__main__":
+    main()
