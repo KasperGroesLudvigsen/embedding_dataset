@@ -24,6 +24,8 @@ class Generator(ABC):
             task: list=[], num_words: list=[], clarity: list=[], difficulty: list=[]
             ) -> None:
         
+        self.model_id = model_id
+        
         self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
 
         self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
