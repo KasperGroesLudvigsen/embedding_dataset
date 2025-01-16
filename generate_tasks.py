@@ -8,4 +8,6 @@ modules = [generate_retrieval_tasks, generate_text_classification_tasks, generat
 
 for mod in modules:
 
+    print(f"Running main() in module:\n{mod}")
+
     mod.main()
