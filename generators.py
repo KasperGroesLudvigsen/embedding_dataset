@@ -1,4 +1,4 @@
-#from vllm import LLM, SamplingParams
+from vllm import LLM, SamplingParams
 import random
 from datasets import Dataset, load_dataset
 import json
@@ -26,9 +26,9 @@ class Generator(ABC):
         
         self.model_id = model_id
         self.samples = samples
-        #self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
+        self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
 
-        #self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
+        self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
 
         self.prompt = prompt
 
