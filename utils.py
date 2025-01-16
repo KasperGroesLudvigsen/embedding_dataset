@@ -96,9 +96,9 @@ def generate_task(
 
     print(responses)
 
-    # For some reason, gemma does not provide a python list for this task, so I 
-    # will skip this for the retrieval task and take care of it afterwards
-    if "retrieval" not in hf_dataset_name:
+    # For some reason, gemma does not provide a python list for all tasks, so I 
+    # will skip this step except for classification and post process the other tasks
+    if "classification" in hf_dataset_name:
         responses = convert_and_flatten(responses)
 
     responses = [{"response" : response} for response in responses]
