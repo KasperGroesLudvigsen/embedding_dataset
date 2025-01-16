@@ -7,7 +7,6 @@ from generators import GenerateUnitTriple
 import variables
 
 def main():
-    task_dataset_id = "synthetic-from-unit-triple-tasks"
 
     language = "DANISH"
     task = ["task1", "task2"]
@@ -35,15 +34,18 @@ def main():
         language=variables.language,
         task=task,
         samples=variables.total_desired_samples,
-        unit=unit
+        unit=unit,
+        high_score=high_score,
+        difficulty=difficulty,
+        low_score=low_score
         )
 
     dataset = generator.generate()
 
-    dataset.to_csv(f"{task_dataset_id}.csv")
+    dataset.to_csv(f"{variables.task_dataset_id_unit_triple}.csv")
 
     if variables.push_to_hf:
-        dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}")
+        dataset.push_to_hub(f"ThatsGroes/{variables.task_dataset_id_unit_triple}")
 
 if __name__ == "__main__":
     main()

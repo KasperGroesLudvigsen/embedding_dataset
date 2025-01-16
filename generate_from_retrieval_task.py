@@ -3,7 +3,7 @@ Table 8 - retrieval task
 """
 
 from datasets import load_dataset
-from generators import GenerateFromTextClassificationTask
+from generators import GenerateFromRetrievalTask
 import variables
 
 task_dataset_id = "synthetic-from-retrieval-tasks"
@@ -39,13 +39,19 @@ to the "positive_document".
 Your output must always be a JSON object only, do not explain yourself or output anything else. Be creative!"""
 
 
-generator = GenerateFromTextClassificationTask(
+generator = GenerateFromRetrievalTask(
     model_id=variables.model_id, 
     temperature=variables.temperature, 
     top_p=variables.top_p, 
     prompt=prompt, 
     language=variables.language,
-    samples=variables.total_desired_samples
+    samples=variables.total_desired_samples,
+    task=task,
+    clarity=clarity,
+    num_words=num_words,
+    difficulty=difficulty,
+    query_type=query_type,
+    query_length=query_length
     )
 
 dataset = generator.generate()
