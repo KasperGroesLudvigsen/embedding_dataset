@@ -96,7 +96,10 @@ def generate_task(
 
     print(responses)
 
-    responses = convert_and_flatten(responses)
+    # For some reason, gemma does not provide a python list for this task, so I 
+    # will skip this for the retrieval task and take care of it afterwards
+    if "retrieval" not in hf_dataset_name:
+        responses = convert_and_flatten(responses)
 
     responses = [{"response" : response} for response in responses]
 
