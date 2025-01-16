@@ -12,7 +12,7 @@ def main():
 
     language = "DANISH"
     task = ["task1", "task2"]
-    task = load_dataset(f"ThatsGroes/{variables.text_matching_short_dataset_name}")
+    task = load_dataset(f"ThatsGroes/{variables.text_matching_short_dataset_name}-processed")
     task = list(task["train"]["response"])
 
 

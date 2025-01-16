@@ -17,7 +17,7 @@ def main():
     query_length = ["less than 5 words", "5 to 15 words", "at least 10 words"]
     query_type = ["extremely long-tail", "long-tail", "common"]
 
-    task = load_dataset(f"ThatsGroes/{variables.retrieval_task_dataset_name}")
+    task = load_dataset(f"ThatsGroes/{variables.retrieval_task_dataset_name}-processed")
     task = list(task["train"]["response"])
 
 

@@ -15,7 +15,7 @@ def main():
     difficulty = ["high school", "college", "PhD"]
     clarity = ["clear", "understandable with some effort", "ambiguous"]
 
-    task = load_dataset(f"ThatsGroes/{variables.text_classification_task_dataset_name}")
+    task = load_dataset(f"ThatsGroes/{variables.text_classification_task_dataset_name}-processed")
     task = list(task["train"]["response"])
 
 
