@@ -16,11 +16,31 @@ def split_responses(dataset, column="response"):
             print(f"Unexpected format: {entry}")
     return new_entries
 
-data = load_dataset("ThatsGroes/classification-tasks")
-for i in data["train"]:
-    print(i["response"])
+def post_process_classification_tasks():
+    data_id = f"ThatsGroes/{variables.text_classification_task_dataset_name}"
+    
+    data = load_dataset(data_id)
 
-data_processed = split_responses(data["train"])
+    data_list = list(data["train"]["response"])
+
+    new_data = []
+
+    for i in data_list:
+
+        i = i.replace("```", "").replace("```python", "").replace("[", "").replace("]", "")
+
+        i = i.strip("'").lstrip('- ').strip()
+
+        i = i.replace("'", "")
+
+        new_data.extend(i.split("\n"))
+
+    new_data = [n for n in new_data if n]
+
+    new_data = Dataset.from_dict({"response" : new_data})
+
+    new_data.push_to_hub(f"{data_id}-processed")
+
 
 def split_and_clean(entry):
     """
@@ -46,6 +66,9 @@ def get_hf_id(s):
     return f"ThatsGroes/{s}"
 
 def main():
+
+    post_process_classification_tasks()
+
     # classification tasks omitted as the dataset was properly formatted by gemma
     dataset_ids = [get_hf_id(variables.retrieval_task_dataset_name), get_hf_id(variables.text_matching_long_dataset_name), get_hf_id(variables.text_matching_short_dataset_name)]
 
