@@ -103,7 +103,7 @@ def generate_task(
 
     dataset = Dataset.from_list(responses)
 
-    dataset.to_csv(csv_save_as)
+    dataset.to_csv(csv_save_as, index=False)
 
     if push_to_hf:
 

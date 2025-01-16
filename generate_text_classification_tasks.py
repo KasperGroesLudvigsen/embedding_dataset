@@ -10,6 +10,9 @@ Please adhere to the following guidelines:
 - Tasks should cover a diverse range of domains and task types.
 Your output must always be a Python list of strings only, with about 20 elements, and each element corresponds to a distinct text classification task in one sentence. Do not explain yourself or output anything else. Be creative!"""
 
+csv_save_as = f"{variables.text_classification_task_dataset_name}.csv"
+push_to_hf = True
+
 generate_task(total_desired_samples=variables.total_desired_samples,
               model_id=variables.model_id,
               prompt=prompt,
