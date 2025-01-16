@@ -19,7 +19,7 @@ def main():
     csv_save_as = f"{variables.retrieval_task_dataset_name}.csv"
     push_to_hf = True
 
-    generate_task(total_desired_samples=variables.total_desired_samples,
+    generate_task(total_desired_samples=variables.total_desired_tasks,
                 model_id=variables.model_id,
                 prompt=prompt,
                 csv_save_as=csv_save_as,
