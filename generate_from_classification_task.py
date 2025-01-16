@@ -42,7 +42,11 @@ generator = GenerateFromTextClassificationTask(
     top_p=variables.top_p, 
     prompt=prompt, 
     language=variables.language,
-    samples=variables.total_desired_samples
+    samples=variables.total_desired_samples,
+    task=task,
+    num_words=num_words,
+    clarity=clarity,
+    difficulty=difficulty
     )
 
 dataset = generator.generate()

@@ -41,8 +41,6 @@ class Generator(ABC):
 
     def _generate(self):
 
-        #prompts = [{"prompt": [{"role": "user", "content": self.make_prompt()}]} for i in range(samples)]
-
         prompts = Dataset.from_list(self.prompts)
 
         outputs = self.llm.chat(prompts["prompt"], self.sampling_params)
@@ -84,6 +82,8 @@ class GenerateFromTextClassificationTask(Generator):
     """
 
     def make_prompt(self) -> dict:
+
+        print(self.task)
 
         _prompt = self.prompt.format(
             task=random.choice(self.task),
