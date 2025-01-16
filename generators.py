@@ -48,7 +48,7 @@ class Generator(ABC):
 
         #prompts = Dataset.from_list(self.prompts)
 
-        outputs = self.llm.chat(prompts["prompt"], self.sampling_params)
+        outputs = self.llm.chat(self.prompts["prompt"], self.sampling_params)
 
         return outputs
     
