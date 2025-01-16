@@ -39,13 +39,14 @@ class Generator(ABC):
         self.clarity = clarity
         self.difficulty = difficulty
 
-        self.prompts = [{"prompt": [{"role": "user", "content": self.make_prompt()}]} for i in range(samples)]
+        #self.prompts = [{"prompt": [{"role": "user", "content": self.make_prompt()}]} for i in range(samples)]
+        self.prompts = [[{"role": "user", "content": self.make_prompt()}] for i in range(samples)]
 
         print(f"EXAMPLE PROMPT:\n\n{self.prompts[0]}")
 
     def _generate(self):
 
-        prompts = Dataset.from_list(self.prompts)
+        #prompts = Dataset.from_list(self.prompts)
 
         outputs = self.llm.chat(prompts["prompt"], self.sampling_params)
 
