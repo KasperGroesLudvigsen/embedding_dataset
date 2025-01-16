@@ -1,6 +1,26 @@
+"""
+Post processing of the generated tasks
+"""
+
 from datasets import load_dataset, Dataset
 import variables
 
+def split_responses(dataset, column="response"):
+    new_entries = []
+    for entry in dataset[column]:
+        # Extract the content inside the Python list
+        response_list = eval(entry.strip("```python").strip())  # Convert string representation to a Python list
+        if isinstance(response_list, list):
+            new_entries.extend([sentence.strip().strip('"') for sentence in response_list])
+        else:
+            print(f"Unexpected format: {entry}")
+    return new_entries
+
+data = load_dataset("ThatsGroes/classification-tasks")
+for i in data["train"]:
+    print(i["response"])
+
+data_processed = split_responses(data["train"])
 
 def split_and_clean(entry):
     """
