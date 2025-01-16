@@ -78,14 +78,13 @@ class Generator(ABC):
         return dataset
 
 
+
 class GenerateFromTextClassificationTask(Generator):
     """
     Table 9
     """
 
     def make_prompt(self) -> dict:
-
-        print(self.task)
 
         _prompt = self.prompt.format(
             task=random.choice(self.task),
@@ -100,6 +99,8 @@ class GenerateFromTextClassificationTask(Generator):
     def post_process(self, outputs: list[dict]) -> Dataset:
 
         # dataset specific post processing
+
+        print(f"\n\nOUTPUT EXAMPLE:\n\n {outputs[0]}")
 
         outputs = [json.loads(output.outputs[0].text) for output in outputs]
 
