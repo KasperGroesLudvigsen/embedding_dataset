@@ -1,4 +1,4 @@
-from vllm import LLM, SamplingParams
+#from vllm import LLM, SamplingParams
 import random
 from datasets import Dataset, load_dataset
 import json
@@ -25,10 +25,10 @@ class Generator(ABC):
             ) -> None:
         
         self.model_id = model_id
-        
-        self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
+        self.samples = samples
+        #self.llm = LLM(model=model_id, max_seq_len_to_capture=8000)
 
-        self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
+        #self.sampling_params = SamplingParams(temperature=temperature, top_p=top_p, max_tokens=2048*2)
 
         self.prompt = prompt
 
@@ -40,11 +40,17 @@ class Generator(ABC):
         self.difficulty = difficulty
 
         #self.prompts = [{"prompt": [{"role": "user", "content": self.make_prompt()}]} for i in range(samples)]
-        self.prompts = [[{"role": "user", "content": self.make_prompt()}] for i in range(samples)]
+        #self.prompts = [[{"role": "user", "content": self.make_prompt()}] for i in range(samples)]
 
+
+    def set_prompts(self):
+        self.prompts = [[{"role": "user", "content": self.make_prompt()}] for i in range(self.samples)]
         print(f"EXAMPLE PROMPT:\n\n{self.prompts[0]}")
 
+
     def _generate(self):
+
+        self.set_prompts()
 
         #prompts = Dataset.from_list(self.prompts)
 
