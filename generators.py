@@ -64,16 +64,17 @@ class Generator(ABC):
         pass
 
     def post_process(self, outputs: list[dict]) -> Dataset:
-
         # dataset specific post processing
 
-        outputs = [json.loads(output.outputs[0].text) for output in outputs]
+        print(f"\n\nOUTPUT EXAMPLE:\n\n {outputs[0]}")
 
-        df = pd.DataFrame(outputs)
+        outputs = [output.outputs[0].text for output in outputs]
+
+        df = pd.DataFrame({"response" : outputs})
 
         df["model"] = self.model_id
 
-        df["prompt"] = self.prompts["prompt"]
+        df["prompt"] = self.prompts
 
         dataset = Dataset.from_pandas(df)
 
@@ -98,26 +99,7 @@ class GenerateFromTextClassificationTask(Generator):
 
         return _prompt
     
-    def post_process(self, outputs: list[dict]) -> Dataset:
-
-
-        # dataset specific post processing
-
-        print(f"\n\nOUTPUT EXAMPLE:\n\n {outputs[0]}")
-
-        outputs = [output.outputs[0].text for output in outputs]
-
-        df = pd.DataFrame({"response" : outputs})
-
-        df["model"] = self.model_id
-
-        df["prompt"] = self.prompts["prompt"]
-
-        dataset = Dataset.from_pandas(df)
-
-        return dataset
-
-
+    
 class GenerateFromRetrievalTask(Generator):
 
     """
