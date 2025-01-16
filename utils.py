@@ -99,7 +99,7 @@ def generate_task(
     responses = [{"response" : response} for response in responses]
 
     # remove duplicates
-    responses = list(set(responses))
+    #responses = list(set(responses))
 
     dataset = Dataset.from_list(responses)
 
