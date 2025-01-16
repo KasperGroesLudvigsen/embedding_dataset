@@ -92,6 +92,8 @@ def generate_task(
 
     outputs = llm.chat(prompts["prompt"], sampling_params)
 
+    print(outputs)
+
     responses = [output.outputs[0].text for output in outputs]
 
     responses = convert_and_flatten(responses)
