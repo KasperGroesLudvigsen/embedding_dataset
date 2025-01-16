@@ -13,7 +13,6 @@ language = "DANISH"
 num_words = ["less than 10", "at least 10", "at least 50", "at least 100", "at least 200"]
 difficulty = ["high school", "college", "PhD"]
 clarity = ["clear", "understandable with some effort", "ambiguous"]
-task = ["task1", "task2"]
 
 task = load_dataset(f"ThatsGroes/{variables.text_classification_task_dataset_name}")
 task = list(task["train"]["response"])
