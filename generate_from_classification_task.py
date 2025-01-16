@@ -59,3 +59,6 @@ if variables.push_to_hf:
 
 
 
+s = '```json\n{\n "input_text": "Regeringen har netop afsluttet forhandlingerne om en ny klimaaftale, som bl.a. indebærer stramme nye målsætninger for reduktionen af CO2-udledninger. Oppositionen kritiserer aftalen for at være for ambitiøs og frygter, at den vil skade erhvervslivet. Miljøorganisationer jubler derimod over resultatet og kalder det et stort skridt i den rigtige retning. Der er delte meninger om, hvorvidt aftalen er nok til at nå de internationale klimaforpligtelser, men eksperter er enige om, at den markerer et vigtigt vendepunkt i Danmarks klimaplan.",\n "label": "Venstreorienteret",\n "misleading_label": "Højreorienteret"\n}\n```\n'
+
+s

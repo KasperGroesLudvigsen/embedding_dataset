@@ -98,13 +98,14 @@ class GenerateFromTextClassificationTask(Generator):
     
     def post_process(self, outputs: list[dict]) -> Dataset:
 
+
         # dataset specific post processing
 
         print(f"\n\nOUTPUT EXAMPLE:\n\n {outputs[0]}")
 
-        outputs = [json.loads(output.outputs[0].text) for output in outputs]
+        outputs = [output.outputs[0].text for output in outputs]
 
-        df = pd.DataFrame(outputs)
+        df = pd.DataFrame({"response" : outputs})
 
         df["model"] = self.model_id
 
