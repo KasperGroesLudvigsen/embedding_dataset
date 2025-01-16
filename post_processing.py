@@ -1,4 +1,4 @@
-from datasets import load_dataset, DatasetDict, Dataset
+from datasets import load_dataset, Dataset
 import variables
 
 
@@ -25,19 +25,23 @@ def process_dataset(dataset):
 def get_hf_id(s):
     return f"ThatsGroes/{s}"
 
-dataset_ids = [get_hf_id(variables.retrieval_task_dataset_name), get_hf_id(variables.text_matching_long_dataset_name), get_hf_id(variables.text_matching_short_dataset_name)]
+def main():
+    # classification tasks omitted as the dataset was properly formatted by gemma
+    dataset_ids = [get_hf_id(variables.retrieval_task_dataset_name), get_hf_id(variables.text_matching_long_dataset_name), get_hf_id(variables.text_matching_short_dataset_name)]
 
-# Load your dataset
-data = load_dataset("ThatsGroes/retrieval-tasks")  # Replace with your dataset name
-# Process the 'train' split
-train_sentences = process_dataset(data["train"])
+    for id in dataset_ids:
+        # Load your dataset
+        data = load_dataset(id)  # Replace with your dataset name
+        # Process the 'train' split
+        train_sentences = process_dataset(data["train"])
 
-# Create a new Dataset from the cleaned sentences
-new_train_dataset = Dataset.from_dict({"response": train_sentences})
+        # Create a new Dataset from the cleaned sentences
+        new_train_dataset = Dataset.from_dict({"response": train_sentences})
 
-# Replace the 'train' split with the new dataset
-#processed_data = DatasetDict({"train": new_train_dataset})
+        new_train_dataset.push_to_hub(f"{id}-processed")
+        # Replace the 'train' split with the new dataset
+        #processed_data = DatasetDict({"train": new_train_dataset})
 
-# Save or inspect the processed dataset
-#processed_data.save_to_disk("processed_dataset")  # Save to disk if needed
-#print(processed_data["train"][0])  # Example: Print the first processed entry
+        # Save or inspect the processed dataset
+        #processed_data.save_to_disk("processed_dataset")  # Save to disk if needed
+        #print(processed_data["train"][0])  # Example: Print the first processed entry
