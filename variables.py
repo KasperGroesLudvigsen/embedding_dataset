@@ -1,6 +1,6 @@
 model_id="google/gemma-2-27b-it"
 total_desired_samples=500000
-total_desired_tasks=total_desired_samples/2
+total_desired_tasks=total_desired_samples//2
 temperature = 1.0
 top_p = 1.0
 language="DANISH"
