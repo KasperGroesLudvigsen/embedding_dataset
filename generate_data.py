@@ -4,8 +4,13 @@ import generate_from_text_matching_long
 import generate_from_text_matching_short
 import generate_from_unit_triple
 
-modules = [generate_from_unit_triple, generate_from_classification_task, generate_from_retrieval_task, generate_from_text_matching_long, generate_from_text_matching_short]
 
-for mod in modules:
+def main():
+    modules = [generate_from_unit_triple, generate_from_classification_task, generate_from_retrieval_task, generate_from_text_matching_long, generate_from_text_matching_short]
 
-    mod.main()
+    for mod in modules:
+
+        mod.main()
+
+if __name__ == "__main__":
+    main()
