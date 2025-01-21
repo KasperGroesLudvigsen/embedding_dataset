@@ -39,7 +39,13 @@ def main():
 
     dataset = generator.generate()
 
-    dataset.to_csv(f"{task_dataset_id}.csv")
+    try:
+        dataset.to_csv(f"{task_dataset_id}.csv")
+
+    except Exception as e:
+
+        print(f"could not save {variables.task_dataset_id}.csv")
+        print(f"Exception: {e}")
 
     if variables.push_to_hf:
         dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}")
