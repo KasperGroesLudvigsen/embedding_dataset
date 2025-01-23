@@ -44,7 +44,7 @@ def main():
 
     except Exception as e:
 
-        print(f"could not save {variables.task_dataset_id}.csv")
+        print(f"could not save {task_dataset_id}.csv")
         print(f"Exception: {e}")
 
     if variables.push_to_hf:
