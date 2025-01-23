@@ -14,22 +14,26 @@ PYTHON_FILE_2=$2
 LOG_FILE_1=$(basename "$PYTHON_FILE_1" .py).log
 LOG_FILE_2=$(basename "$PYTHON_FILE_2" .py).log
 
-# Run the first Python file with nohup
+# Run the first Python file in the background with nohup
 echo "Running $PYTHON_FILE_1 in the background..."
 nohup python3 $PYTHON_FILE_1 > "$LOG_FILE_1" 2>&1 &
-
-# Save the PID of the first script
 PID1=$!
 
-# Run the second Python file with nohup
+# Wait for the first script to finish
+wait $PID1
+
+# Check if the first script completed successfully
+if [ $? -ne 0 ]; then
+  echo "Error: $PYTHON_FILE_1 failed to execute. Aborting."
+  exit 1
+fi
+
+echo "$PYTHON_FILE_1 completed successfully."
+
+# Run the second Python file in the background with nohup
 echo "Running $PYTHON_FILE_2 in the background..."
 nohup python3 $PYTHON_FILE_2 > "$LOG_FILE_2" 2>&1 &
-
-# Save the PID of the second script
 PID2=$!
 
-echo "Scripts are running in the background."
-echo "PID of $PYTHON_FILE_1: $PID1"
-echo "PID of $PYTHON_FILE_2: $PID2"
-
+echo "$PYTHON_FILE_2 is running in the background with PID $PID2."
 echo "Logs are being written to $LOG_FILE_1 and $LOG_FILE_2."
