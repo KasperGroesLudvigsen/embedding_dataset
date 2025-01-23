@@ -10,7 +10,7 @@ import variables
 def main():
     task_dataset_id = "synthetic-from-text-matching-long-tasks"
 
-    language = "DANISH"
+    language = variables.language
     task = ["task1", "task2"]
     task = load_dataset(f"ThatsGroes/{variables.text_matching_long_dataset_name}-processed")
     task = list(task["train"]["response"])
