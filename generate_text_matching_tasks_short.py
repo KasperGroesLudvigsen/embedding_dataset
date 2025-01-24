@@ -23,7 +23,7 @@ def main():
                 prompt=prompt,
                 csv_save_as=csv_save_as,
                 push_to_hf=push_to_hf,
-                hf_dataset_name=variables.text_matching_short_dataset_name)
+                hf_dataset_name=f"{variables.hf_user}/{variables.text_matching_short_dataset_name}")
     
 if __name__ == "__main__":
     main()
