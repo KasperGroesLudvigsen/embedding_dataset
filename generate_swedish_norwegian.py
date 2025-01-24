@@ -15,3 +15,6 @@ def main():
         for mod in modules:
 
             mod.main(language)
+
+if __name__ == "__main__":
+    main()
