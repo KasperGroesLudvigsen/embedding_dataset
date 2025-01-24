@@ -6,15 +6,16 @@ latency reasons.
 from datasets import load_dataset
 from generators import GenerateFromTextMatchingTask
 import variables
+import argparse
 
-def main():
+def main(language: str):
+
+    print(f"Will generate data in: {language}")
+
     task_dataset_id = "synthetic-from-text-matching-long-tasks"
 
-    language = variables.language
-    task = ["task1", "task2"]
     task = load_dataset(f"ThatsGroes/{variables.text_matching_long_dataset_name}-processed")
     task = list(task["train"]["response"])
-
 
     prompt = f"""You have been assigned a text matching task: {{task}}
     Your mission is to write one example for this task in JSON format. The JSON object must contain the following keys:
@@ -32,7 +33,7 @@ def main():
         temperature=variables.temperature, 
         top_p=variables.top_p, 
         prompt=prompt, 
-        language=variables.language,
+        language=language,
         samples=variables.total_desired_samples,
         task=task,
         )
@@ -40,7 +41,7 @@ def main():
     dataset = generator.generate()
 
     try:
-        dataset.to_csv(f"{task_dataset_id}-{variables.language.lower()}.csv")
+        dataset.to_csv(f"{task_dataset_id}-{language.lower()}.csv", index=False)
 
     except Exception as e:
 
@@ -48,9 +49,18 @@ def main():
         print(f"Exception: {e}")
 
     if variables.push_to_hf:
-        dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}-{variables.language.lower()}")
+
+        if "(" in language or ")" in language:
+            language = language.split("(")[0].strip()
+       
+        dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}-{language.lower()}")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Process a language argument.")
 
+    parser.add_argument("language", type=str, help="The language of the generated data.")
+
+    args = parser.parse_args()
+
+    main(language=args.language)

@@ -5,10 +5,12 @@ Table 12: Prompt template for monolingual STS. For placeholders, “{high_score}
 
 from generators import GenerateUnitTriple
 import variables
+import argparse
 
-def main():
+def main(language: str):
 
-    language = "DANISH"
+    print(f"Will generate data in: {language}")
+
     task = ["task1", "task2"]
     unit = ["sentence", "phrase", "passage"]
     high_score = ["4", "4.5", "5"]
@@ -31,7 +33,7 @@ def main():
         temperature=variables.temperature, 
         top_p=variables.top_p, 
         prompt=prompt, 
-        language=variables.language,
+        language=language,
         task=task,
         samples=variables.total_desired_samples,
         unit=unit,
@@ -43,14 +45,27 @@ def main():
     dataset = generator.generate()
 
     try:
-        dataset.to_csv(f"{variables.task_dataset_id_unit_triple}-{variables.language.lower()}.csv")
+
+        dataset.to_csv(f"{variables.task_dataset_id_unit_triple}-{language.lower()}.csv", index=False)
 
     except Exception as e:
 
         print(f"could not save {variables.task_dataset_id_unit_triple}.csv")
 
     if variables.push_to_hf:
-        dataset.push_to_hub(f"ThatsGroes/{variables.task_dataset_id_unit_triple}-{variables.language.lower()}")
+
+        if "(" in language or ")" in language:
+        
+            language = language.split("(")[0].strip()
+        
+        dataset.push_to_hub(f"ThatsGroes/{variables.task_dataset_id_unit_triple}-{language.lower()}")
 
 if __name__ == "__main__":
-    main()
+
+    parser = argparse.ArgumentParser(description="Process a language argument.")
+
+    parser.add_argument("language", type=str, help="The language of the generated data.")
+
+    args = parser.parse_args()
+
+    main(language=args.language)

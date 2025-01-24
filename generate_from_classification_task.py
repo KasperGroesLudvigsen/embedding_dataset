@@ -6,11 +6,16 @@ Table 9: Prompt template for the long-short matching subgroup. For placeholders,
 from datasets import load_dataset
 from generators import GenerateFromTextClassificationTask
 import variables
+import argparse
 
-def main():
+
+def main(language: str):
+
+    print(f"Will generate data in: {language}")
+
+
     task_dataset_id = "synthetic-from-classification-tasks"
 
-    language = "DANISH"
     num_words = ["less than 10", "at least 10", "at least 50", "at least 100", "at least 200"]
     difficulty = ["high school", "college", "PhD"]
     clarity = ["clear", "understandable with some effort", "ambiguous"]
@@ -42,7 +47,7 @@ def main():
         temperature=variables.temperature, 
         top_p=variables.top_p, 
         prompt=prompt, 
-        language=variables.language,
+        language=language,
         samples=variables.total_desired_samples,
         task=task,
         num_words=num_words,
@@ -53,7 +58,7 @@ def main():
     dataset = generator.generate()
 
     try:
-        dataset.to_csv(f"{task_dataset_id}-{variables.language.lower()}.csv")
+        dataset.to_csv(f"{task_dataset_id}-{language.lower()}.csv", index=False)
 
     except Exception as e:
 
@@ -61,7 +66,18 @@ def main():
         print(f"Exception: {e}")
 
     if variables.push_to_hf:
-        dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}-{variables.language.lower()}")
+
+        if "(" in language or ")" in language:
+            language = language.split("(")[0].strip()
+
+        dataset.push_to_hub(f"ThatsGroes/{task_dataset_id}-{language.lower()}")
 
 if __name__ == "__main__":
-    main()
+
+    parser = argparse.ArgumentParser(description="Process a language argument.")
+
+    parser.add_argument("language", type=str, help="The language of the generated data.")
+
+    args = parser.parse_args()
+
+    main(language=args.language)
