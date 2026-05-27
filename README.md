@@ -15,7 +15,7 @@ The generation follows a **two-step prompting strategy**:
 1. **Brainstorm** — prompt the LLM to generate ~20 task definitions for a given category (e.g., "Retrieve documents that answer FAQ-style queries on children's nutrition").
 2. **Generate** — for each task definition, prompt the LLM to produce one concrete data example with randomised placeholder variables (document length, difficulty, clarity, etc.) to maximise diversity.
 
-This repo reproduces that approach using Gemma-2-27B-IT instead of GPT-4, extended to Swedish and Norwegian.
+This repo reproduces that approach using Gemma-2-27B-IT instead of GPT-4, and swaps English for Danish, Swedish and Norwegian.
 
 > Wang, L., Yang, N., Huang, X., Yang, L., Majumder, R., & Wei, F. (2024). Improving Text Embeddings with Large Language Models. *arXiv:2401.00368*.
 
@@ -64,6 +64,31 @@ to a spreadsheet, colour-coding cells, and using VLOOKUP, conditional formatting
 and pivot tables..."
 ```
 
+**Generation prompt template:**
+```
+You have been assigned a retrieval task: {task}
+Your mission is to write one text retrieval example for this task in JSON format. The JSON
+object must contain the following keys:
+- "user_query": a string, a random user search query specified by the retrieval task.
+- "positive_document": a string, a relevant document for the user query.
+- "hard_negative_document": a string, a hard negative document that only appears relevant
+  to the query.
+Please adhere to the following guidelines:
+- The "user_query" should be {query_type}, {query_length}, {clarity}, and diverse in topic.
+- All documents must be created independent of the query. Avoid copying the query verbatim.
+  It's acceptable if some parts of the "positive_document" are not topically related to
+  the query.
+- All documents should be at least {num_words} words long.
+- The "hard_negative_document" contains some useful information, but it should be less
+  useful or comprehensive compared to the "positive_document".
+- Both the query and documents should be in {language}.
+- Do not provide any explanation in any document on why it is relevant or not relevant to
+  the query.
+- Both the query and documents require {difficulty} level education to understand.
+Your output must always be a JSON object only, do not explain yourself or output anything
+else. Be creative!
+```
+
 ---
 
 ### 2. Classification — Long-Short (Table 9)
@@ -96,6 +121,29 @@ label: "High Severity"
 misleading_label: "Low Severity"
 ```
 
+**Generation prompt template:**
+```
+You have been assigned a text classification task: {task}
+
+Your mission is to write one text classification example for this task in JSON format. The
+JSON object must contain the following keys:
+- "input_text": a string, the input text specified by the classification task.
+- "label": a string, the correct label of the input text.
+- "misleading_label": a string, an incorrect label that is related to the task.
+
+Please adhere to the following guidelines:
+- The "input_text" should be {num_words} words and diverse in expression.
+- The "misleading_label" must be a valid label for the given task, but not as appropriate
+  as the "label" for the "input_text".
+- The values for all fields should be in {language}.
+- Avoid including the values of the "label" and "misleading_label" fields in the
+  "input_text", that would make the task too easy.
+- The "input_text" is {clarity} and requires {difficulty} level education to comprehend.
+
+Your output must always be a JSON object only, do not explain yourself or output anything
+else. Be creative!
+```
+
 ---
 
 ### 3. Short Text Matching — Short-Short (Table 10)
@@ -120,6 +168,22 @@ Other representative task types for this category include:
 - Match a scientific paper title to a citing paper's title
 - Match a word to its definition
 - Match a notable person's name to their occupation or achievement
+
+**Generation prompt template:**
+```
+You have been assigned a text matching task: {task}
+Your mission is to write one example for this task in JSON format. The JSON object must
+contain the following keys:
+- "input": a string, a random input specified by the task.
+- "positive_document": a string, a relevant document for the "input" according to the task.
+Please adhere to the following guidelines:
+- The values of all fields should be in {language}.
+- Both the "input" and "positive_document" should be very short (a sentence or a phrase),
+  avoid substantial word overlaps, otherwise the task would be too easy.
+- The "input" and "positive_document" should be independent of each other.
+Your output must always be a JSON object only, do not explain yourself or output anything
+else. Be creative!
+```
 
 ---
 
@@ -150,6 +214,22 @@ Representative task types for this category include:
 - Given a document supporting a debatable argument, find one containing opposing arguments
 - Given a lengthy business proposal, retrieve competitive business strategies in the same industry
 
+**Generation prompt template:**
+```
+You have been assigned a text matching task: {task}
+Your mission is to write one example for this task in JSON format. The JSON object must
+contain the following keys:
+- "input": a string, a random input specified by the task.
+- "positive_document": a string, a relevant document for the "input" according to the task.
+Please adhere to the following guidelines:
+- The values of all fields should be in {language}.
+- Both the "input" and "positive_document" should be long documents (at least 300 words),
+  avoid substantial word overlaps, otherwise the task would be too easy.
+- The "input" and "positive_document" should be independent of each other.
+Your output must always be a JSON object only, do not explain yourself or output anything
+else. Be creative!
+```
+
 ---
 
 ### 5. Unit Triple — Monolingual STS (Table 12)
@@ -179,6 +259,22 @@ Three sentences/phrases/passages where S1–S2 have high semantic similarity and
 S1: "Tom loves to ride his blue bicycle in the park every morning."
 S2: "Every morning, Tom enjoys riding his blue bike in the park."   (similarity ≈ 4.5)
 S3: "Tom takes his blue pen to school every day."                   (similarity ≈ 3.0)
+```
+
+**Generation prompt template:**
+```
+Write a {unit} triple with varying semantic similarity scores in JSON format. The semantic
+similarity score ranges from 1 to 5, with 1 denotes least similar and 5 denotes most similar.
+Please adhere to the following guidelines:
+- The keys in JSON are "S1", "S2", and "S3", the values are all strings in {language}, do
+  not add any other keys.
+- There should be some word overlaps between all three {unit}s.
+- The similarity score between S1 and S2 should be {high_score}.
+- The similarity score between S1 and S3 should be {low_score}.
+- The {unit}s require {difficulty} level education to understand and should be diverse in
+  terms of topic and length.
+Your output must always be a JSON object only with three keys "S1", "S2" and "S3", do not
+explain yourself or output anything else. Be creative!
 ```
 
 ---
